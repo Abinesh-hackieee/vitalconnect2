@@ -1,0 +1,12 @@
+# Node dependencies
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Production builds
+client/dist/
+
+# Environmental secrets (API keys)
+.env
+client/.env
+server/.env
