@@ -1,0 +1,21 @@
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyDB3W7ao5-uz93P64J4DyPyDjuw9KiafPY",
+  authDomain: "my-vital-connect-sms.firebaseapp.com",
+  projectId: "my-vital-connect-sms",
+  storageBucket: "my-vital-connect-sms.firebasestorage.app",
+  messagingSenderId: "987134429117",
+  appId: "1:987134429117:web:976aca5b919a15fda074d4",
+  measurementId: "G-Q9HE7S878K"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);

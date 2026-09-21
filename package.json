@@ -1,0 +1,10 @@
+{
+  "name": "vital-connect",
+  "version": "1.0.0",
+  "description": "Vital Connect - Blood Emergency Assistance Platform",
+  "scripts": {
+    "server": "cd server && node server.js",
+    "client": "cd client && npm run dev",
+    "build": "cd client && npm run build"
+  }
+}
