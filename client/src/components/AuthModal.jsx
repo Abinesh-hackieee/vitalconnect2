@@ -17,6 +17,7 @@ import { api } from '../services/api';
 import BloodGroupSelector, { ALL_BLOOD_GROUPS } from './BloodGroupSelector';
 
 const GENDERS = ['Male', 'Female', 'Other', 'Prefer not to say'];
+// sljdhsdkl
 
 export default function AuthModal({
   isOpen,
@@ -270,11 +271,10 @@ export default function AuthModal({
                 setTab('login');
                 setError('');
               }}
-              className={`flex-1 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
-                tab === 'login'
-                  ? 'bg-vital-600 text-white shadow-md'
-                  : 'text-slate-300 hover:text-white'
-              }`}
+              className={`flex-1 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${tab === 'login'
+                ? 'bg-vital-600 text-white shadow-md'
+                : 'text-slate-300 hover:text-white'
+                }`}
             >
               Sign In
             </button>
@@ -283,11 +283,10 @@ export default function AuthModal({
                 setTab('register');
                 setError('');
               }}
-              className={`flex-1 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
-                tab === 'register'
-                  ? 'bg-trust-600 text-white shadow-md'
-                  : 'text-slate-300 hover:text-white'
-              }`}
+              className={`flex-1 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${tab === 'register'
+                ? 'bg-trust-600 text-white shadow-md'
+                : 'text-slate-300 hover:text-white'
+                }`}
             >
               Create Account
             </button>
@@ -388,11 +387,10 @@ export default function AuthModal({
                     onClick={() =>
                       setRegisterData((prev) => ({ ...prev, userType: 'Donor' }))
                     }
-                    className={`py-2.5 px-4 rounded-xl border text-xs font-bold flex items-center justify-center space-x-2 transition-all ${
-                      registerData.userType === 'Donor'
-                        ? 'bg-rose-50 border-vital-500 text-vital-700 ring-2 ring-vital-500/20'
-                        : 'border-slate-200 text-slate-600 hover:bg-slate-50'
-                    }`}
+                    className={`py-2.5 px-4 rounded-xl border text-xs font-bold flex items-center justify-center space-x-2 transition-all ${registerData.userType === 'Donor'
+                      ? 'bg-rose-50 border-vital-500 text-vital-700 ring-2 ring-vital-500/20'
+                      : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                      }`}
                   >
                     <Heart className="w-4 h-4 text-vital-600" />
                     <span>Volunteer Donor</span>
@@ -402,11 +400,10 @@ export default function AuthModal({
                     onClick={() =>
                       setRegisterData((prev) => ({ ...prev, userType: 'Requester' }))
                     }
-                    className={`py-2.5 px-4 rounded-xl border text-xs font-bold flex items-center justify-center space-x-2 transition-all ${
-                      registerData.userType === 'Requester'
-                        ? 'bg-trust-50 border-trust-500 text-trust-700 ring-2 ring-trust-500/20'
-                        : 'border-slate-200 text-slate-600 hover:bg-slate-50'
-                    }`}
+                    className={`py-2.5 px-4 rounded-xl border text-xs font-bold flex items-center justify-center space-x-2 transition-all ${registerData.userType === 'Requester'
+                      ? 'bg-trust-50 border-trust-500 text-trust-700 ring-2 ring-trust-500/20'
+                      : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                      }`}
                   >
                     <User className="w-4 h-4 text-trust-600" />
                     <span>Requester / Patient</span>
@@ -587,11 +584,10 @@ export default function AuthModal({
                           lastDonationDate: e.target.value,
                         })
                       }
-                      className={`w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm transition-all ${
-                        registerData.hasNeverDonated
-                          ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                          : 'bg-slate-50/50 text-slate-800'
-                      }`}
+                      className={`w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm transition-all ${registerData.hasNeverDonated
+                        ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                        : 'bg-slate-50/50 text-slate-800'
+                        }`}
                     />
                     {registerData.hasNeverDonated ? (
                       <p className="text-[11px] text-emerald-600 font-medium">
@@ -750,11 +746,10 @@ export default function AuthModal({
                   type="button"
                   onClick={handleResendOtp}
                   disabled={otpCooldown > 0 || resendLoading}
-                  className={`font-bold ${
-                    otpCooldown > 0 || resendLoading
-                      ? 'text-slate-400 cursor-not-allowed'
-                      : 'text-vital-600 hover:underline'
-                  }`}
+                  className={`font-bold ${otpCooldown > 0 || resendLoading
+                    ? 'text-slate-400 cursor-not-allowed'
+                    : 'text-vital-600 hover:underline'
+                    }`}
                 >
                   {otpCooldown > 0 ? `Resend Code (${otpCooldown}s)` : 'Resend OTP'}
                 </button>
