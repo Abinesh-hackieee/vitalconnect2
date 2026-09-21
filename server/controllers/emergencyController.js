@@ -335,6 +335,8 @@ const createEmergencyRequest = async (req, res) => {
           message: 'Required blood date cannot be in the past.',
         });
       }
+    }
+
     // Validate prescription upload conditionally based on Urgency Level
     // Immediate / Within 2 Hours: Optional
     // Urgent / Scheduled: Mandatory
