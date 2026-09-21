@@ -26,6 +26,35 @@ const URGENCY_LEVELS = [
   'Scheduled',
 ];
 
+/**
+ * Check if Doctor Prescription / Hospital Requisition is mandatory:
+ * 1. Immediate -> OPTIONAL
+ * 2. Within 2 Hours -> OPTIONAL
+ * 3. Urgent -> MANDATORY
+ * 4. Scheduled/Planned -> MANDATORY
+ */
+export const isPrescriptionMandatory = (urgencyLevel) => {
+  if (!urgencyLevel) return false;
+  const level = String(urgencyLevel).toLowerCase();
+  if (
+    level.includes('immediate') ||
+    level.includes('within 2') ||
+    level.includes('2 hr') ||
+    level.includes('2 hour')
+  ) {
+    return false;
+  }
+  if (
+    level.includes('urgent') ||
+    level.includes('scheduled') ||
+    level.includes('planned') ||
+    level.includes('plan')
+  ) {
+    return true;
+  }
+  return false;
+};
+
 export default function EmergencyModal({ isOpen, onClose, onEmergencySubmitted }) {
   const todayString = new Date().toISOString().split('T')[0];
 
@@ -46,6 +75,8 @@ export default function EmergencyModal({ isOpen, onClose, onEmergencySubmitted }
   const [step, setStep] = useState(1); // 1 = Form, 2 = Confirmation Modal
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const isPrescriptionRequired = isPrescriptionMandatory(formData.urgencyLevel);
 
   if (!isOpen) return null;
 
@@ -127,9 +158,9 @@ export default function EmergencyModal({ isOpen, onClose, onEmergencySubmitted }
       return;
     }
 
-    // Validate mandatory doctor prescription file upload
-    if (!prescriptionFile) {
-      setError('Doctor prescription file upload (PDF, JPG, JPEG, or PNG) is mandatory.');
+    // Conditionally validate doctor prescription file upload based on Urgency Level
+    if (isPrescriptionRequired && !prescriptionFile) {
+      setError('Doctor prescription / hospital requisition file upload is mandatory for the selected urgency level.');
       return;
     }
 
@@ -155,7 +186,7 @@ export default function EmergencyModal({ isOpen, onClose, onEmergencySubmitted }
         ...formData,
         unitsRequired: Number(formData.unitsRequired),
         prescriptionFile,
-        requirePrescription: true,
+        requirePrescription: isPrescriptionRequired,
       });
 
       if (res.success) {
@@ -212,7 +243,11 @@ export default function EmergencyModal({ isOpen, onClose, onEmergencySubmitted }
         <div className="bg-amber-50 border-b border-amber-200/80 px-6 py-3 text-xs text-amber-900 flex items-center space-x-2">
           <ShieldAlert className="w-4 h-4 text-amber-600 shrink-0" />
           <span>
-            <strong>Verification Policy:</strong> Doctor prescription verification is mandatory. Once verified, alerts reach all eligible registered donors.
+            <strong>Verification Policy:</strong>{' '}
+            {isPrescriptionRequired
+              ? 'Doctor prescription verification is mandatory.'
+              : 'Doctor prescription is optional for this urgency level.'}{' '}
+            Once verified, alerts reach all eligible registered donors.
           </span>
         </div>
 
@@ -386,12 +421,16 @@ export default function EmergencyModal({ isOpen, onClose, onEmergencySubmitted }
                   <p className="text-[11px] text-slate-400 mt-1">Select the operational urgency for hospital staff.</p>
                 </div>
 
-                {/* Doctor Prescription File Upload (Mandatory) */}
+                {/* Doctor Prescription File Upload (Conditionally Mandatory / Optional) */}
                 <div className="sm:col-span-2 space-y-2">
                   <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center justify-between">
                     <span className="flex items-center space-x-1">
                       <FileCheck className="w-3.5 h-3.5 text-vital-600" />
-                      <span>Doctor Prescription / Hospital Requisition *</span>
+                      <span>
+                        {isPrescriptionRequired
+                          ? 'Doctor Prescription / Hospital Requisition *'
+                          : 'Doctor Prescription / Hospital Requisition (Optional)'}
+                      </span>
                     </span>
                     <span className="text-[11px] font-normal text-slate-500">PDF, JPG, JPEG, PNG (Max 10MB)</span>
                   </label>
@@ -432,7 +471,11 @@ export default function EmergencyModal({ isOpen, onClose, onEmergencySubmitted }
                         </div>
                         <div>
                           <span className="text-xs font-bold text-vital-700">Click to upload doctor prescription</span>
-                          <p className="text-[11px] text-slate-500">Mandatory medical document to verify request authenticity</p>
+                          <p className="text-[11px] text-slate-500">
+                            {isPrescriptionRequired
+                              ? 'Mandatory medical document to verify request authenticity'
+                              : 'Optional document to support request verification'}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -524,12 +567,17 @@ export default function EmergencyModal({ isOpen, onClose, onEmergencySubmitted }
                       <span className="text-slate-400 italic">None specified</span>
                     </div>
                   )}
-                  {prescriptionFile && (
+                  {prescriptionFile ? (
                     <div className="col-span-2 flex items-center space-x-2 pt-1">
                       <span className="text-slate-500">Prescription:</span>{' '}
                       <span className="px-2 py-0.5 rounded-lg bg-emerald-100 text-emerald-800 font-medium text-xs">
                         📎 {prescriptionFile.filename} ({(prescriptionFile.size / 1024).toFixed(1)} KB)
                       </span>
+                    </div>
+                  ) : (
+                    <div className="col-span-2 flex items-center space-x-2 pt-1">
+                      <span className="text-slate-500">Prescription:</span>{' '}
+                      <span className="text-slate-500 italic text-xs">Not uploaded (Optional for {formData.urgencyLevel})</span>
                     </div>
                   )}
                 </div>

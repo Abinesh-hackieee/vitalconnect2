@@ -226,6 +226,36 @@ const broadcastEmergencyToAvailableDonors = async (emergencyDoc, io) => {
   };
 };
 
+/**
+ * Helper to determine whether Doctor Prescription / Hospital Requisition is mandatory
+ * based on Urgency Level:
+ * 1. Immediate -> OPTIONAL
+ * 2. Within 2 Hours -> OPTIONAL
+ * 3. Urgent -> MANDATORY
+ * 4. Scheduled/Planned -> MANDATORY
+ */
+const isPrescriptionMandatory = (urgencyLevel) => {
+  if (!urgencyLevel) return false;
+  const level = String(urgencyLevel).toLowerCase();
+  if (
+    level.includes('immediate') ||
+    level.includes('within 2') ||
+    level.includes('2 hr') ||
+    level.includes('2 hour')
+  ) {
+    return false;
+  }
+  if (
+    level.includes('urgent') ||
+    level.includes('scheduled') ||
+    level.includes('planned') ||
+    level.includes('plan')
+  ) {
+    return true;
+  }
+  return false;
+};
+
 // Create Emergency Request (Registered or Non-Registered)
 const createEmergencyRequest = async (req, res) => {
   try {
@@ -305,11 +335,11 @@ const createEmergencyRequest = async (req, res) => {
           message: 'Required blood date cannot be in the past.',
         });
       }
-    }
-
-    // Validate prescription upload (mandatory for UI requests)
+    // Validate prescription upload conditionally based on Urgency Level
+    // Immediate / Within 2 Hours: Optional
+    // Urgent / Scheduled: Mandatory
     const isBrowser = Boolean(req.headers['origin'] || req.headers['referer']);
-    const isPrescriptionRequired = req.body.requirePrescription === true || isBrowser;
+    const isPrescriptionRequired = isPrescriptionMandatory(urgencyLevel);
 
     let parsedPrescription = null;
     if (prescriptionFile) {
@@ -349,7 +379,7 @@ const createEmergencyRequest = async (req, res) => {
     } else if (isPrescriptionRequired && !autoVerifyPrescription) {
       return res.status(400).json({
         success: false,
-        message: 'Doctor prescription file upload is mandatory to submit an emergency blood request.',
+        message: 'Doctor prescription / hospital requisition file upload is mandatory for this urgency level.',
       });
     }
 
@@ -358,7 +388,7 @@ const createEmergencyRequest = async (req, res) => {
     const shouldAutoVerifyPrescription = Boolean(
       autoVerifyPrescription === true ||
       process.env.AUTO_VERIFY_TEST === 'true' ||
-      (!isBrowser && !req.body.requirePrescription && !prescriptionFile)
+      (!isBrowser && !isPrescriptionRequired && !prescriptionFile)
     );
 
     const initialVerificationStatus = shouldAutoVerifyPrescription ? 'Verified' : 'Pending Verification';
@@ -1327,5 +1357,6 @@ module.exports = {
   verifyEmergencyRequest,
   rejectEmergencyRequest,
   getPrescriptionDocument,
+  isPrescriptionMandatory,
 };
 

@@ -273,18 +273,26 @@ export default function PrescriptionReviewModal({ isOpen, onClose, onVerified })
                   <div className="flex items-center space-x-2">
                     <FileText className="w-4 h-4 text-slate-400" />
                     <span className="text-xs font-semibold text-slate-700">Prescription File:</span>
-                    <span className="text-xs px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200 font-medium">
-                      📎 {req.prescriptionFileName || 'Prescription Document'}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => handleInspectPrescription(req.id, req.prescriptionFileName)}
-                      disabled={loadingDoc}
-                      className="inline-flex items-center space-x-1 text-xs font-bold text-indigo-600 hover:text-indigo-800 hover:underline ml-2"
-                    >
-                      <Eye className="w-3.5 h-3.5" />
-                      <span>Inspect Document</span>
-                    </button>
+                    {req.hasPrescription ? (
+                      <>
+                        <span className="text-xs px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200 font-medium">
+                          📎 {req.prescriptionFileName || 'Prescription Document'}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handleInspectPrescription(req.id, req.prescriptionFileName)}
+                          disabled={loadingDoc}
+                          className="inline-flex items-center space-x-1 text-xs font-bold text-indigo-600 hover:text-indigo-800 hover:underline ml-2"
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                          <span>Inspect Document</span>
+                        </button>
+                      </>
+                    ) : (
+                      <span className="text-xs px-2.5 py-1 rounded-lg bg-slate-100 text-slate-500 border border-slate-200 font-medium">
+                        Not uploaded (Optional for {req.urgencyLevel})
+                      </span>
+                    )}
                   </div>
 
                   {/* Actions */}
